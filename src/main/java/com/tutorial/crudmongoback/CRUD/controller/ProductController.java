@@ -3,12 +3,15 @@ package com.tutorial.crudmongoback.CRUD.controller;
 import com.tutorial.crudmongoback.CRUD.dto.ProductDto;
 import com.tutorial.crudmongoback.CRUD.entity.Product;
 import com.tutorial.crudmongoback.CRUD.service.ProductService;
+import com.tutorial.crudmongoback.global.dto.MessageDto;
 import com.tutorial.crudmongoback.global.exceptions.AttributeException;
 import com.tutorial.crudmongoback.global.exceptions.ResourceNotFoundExceptions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -29,17 +32,23 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Product> save(@RequestBody ProductDto dto) throws AttributeException {
-        return ResponseEntity.ok(productService.save(dto));
+    public ResponseEntity<MessageDto> save(@Valid @RequestBody ProductDto dto) throws AttributeException {
+        Product product = productService.save(dto);
+        String message = "product " + product.getName() + " have been saved";
+        return ResponseEntity.ok(new MessageDto(HttpStatus.OK, message));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> update(@PathVariable("id") int id, @RequestBody ProductDto dto) throws ResourceNotFoundExceptions, AttributeException {
-        return ResponseEntity.ok(productService.update(id, dto));
+    public ResponseEntity<MessageDto> update(@PathVariable("id") int id, @Valid @RequestBody ProductDto dto) throws ResourceNotFoundExceptions, AttributeException {
+        Product product = productService.update(id, dto);
+        String message = "product " + product.getName() + " have been update";
+        return ResponseEntity.ok(new MessageDto(HttpStatus.OK, message));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Product> delete(@PathVariable("id") int id) throws ResourceNotFoundExceptions {
-        return ResponseEntity.ok(productService.delete(id));
+    public ResponseEntity<MessageDto> delete(@PathVariable("id") int id) throws ResourceNotFoundExceptions {
+        Product product = productService.delete(id);
+        String message = "product " + product.getName() + " have been delete";
+        return ResponseEntity.ok(new MessageDto(HttpStatus.OK, message));
     }
 }
